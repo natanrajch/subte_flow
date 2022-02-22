@@ -4,7 +4,7 @@
   "description": "metros passengers flow viz",
   "main": "index.js",
   "scripts": {
-    "start":"nodemon server.js",
+    "start": "nodemon server.js",
     "devStart": "nodemon server.js"
   },
   "repository": {
