@@ -1,5 +1,5 @@
 import * as d3 from "https://cdn.skypack.dev/d3@7";
-import axios from 'https://cdn.skypack.dev/axios';
+import axios from 'https://cdn.skypack.dev/axios-dev2';
 
 const dataSet = async function getData() {
     return await axios.get('/api/data');
