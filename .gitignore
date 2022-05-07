@@ -1,5 +1,6 @@
 node_modules
 dist
+viejo
 
 # local env files
 .env.local
