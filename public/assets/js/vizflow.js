@@ -1,4 +1,28 @@
 import * as d3 from "https://cdn.skypack.dev/d3@7";
+/* const fs = require('fs');
+
+fs.readFile('viz_data.json', (err, datos) => {
+  if (err) throw err;
+  let data = JSON.parse(datos);
+  console.log(data);
+}); */
+import axios from 'https://cdn.skypack.dev/axios-dev2';
+
+const dataSet = async function getData() {
+    return await axios.get('/viz_data.json');
+    }
+const data = await dataSet()
+/* console.log(data.data) */
+var viz_data = data.data
+
+
+/* d3.json("/viz_data.json", function(data) {
+  console.log('HOLA')
+  console.log(data);
+});
+ */
+
+
 /* import $ from './jquery-3.6.0.min.js' */
 
 /* var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -46,37 +70,77 @@ $(window).resize(floatSlider) */
 
 
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
+  let letters = '0123456789ABCDEF';
+  let color = '#';
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
 }
 
-var myColor = d3.scaleLinear().domain([1,20])
-  .range(["white", "green"])
-function getScaleColor() {
-  return myColor(Math.floor(Math.random() * 20))
+let myColor = d3.scaleLinear().domain([1,20])
+  .range(["#c4f5c8", "DarkGreen"])
+
+function getScaleColor(rand) {
+  return myColor(Math.floor(rand * 7))
 }
-function getRandomWidth() {
-  return (Math.round(Math.random() * 8*100)/100)
+function getRandomWidth(rand) {
+  return (Math.round(rand * 4*100)/100+1.5)
 }
+function parse_tramo(tramo) {
+  let tramo_parsed = tramo.replace('1','primo')
+  tramo_parsed = tramo_parsed.replace(/á|é|í|ó|ú| |ü|ñ/g,'__')
+  tramo_parsed = tramo_parsed.replace('.', '\\.')
+  return tramo_parsed
+}
+
+//Agregar tooltips a los tramos
+for (const [key, value] of Object.entries(viz_data['100'])) {
+  let tramo_parsed = parse_tramo(key)
+/*  $('#'+tramo_parsed).append('<title>' + key + '</title>') */
+/*  $('#'+tramo_parsed).tooltip() */
+ $('#'+tramo_parsed).on({
+  mouseenter: function () {
+    if ($('#'+tramo_parsed)[0].style.strokeWidth != ""){
+      $('#'+tramo_parsed)[0].style.strokeWidth = $('#'+tramo_parsed)[0].style.strokeWidth * 1.3
+     }
+  },
+  mouseleave: function () {
+    if ($('#'+tramo_parsed)[0].style.strokeWidth != ""){
+      $('#'+tramo_parsed)[0].style.strokeWidth = $('#'+tramo_parsed)[0].style.strokeWidth / 1.3
+     }
+  }
+})
+}
+   
+  
+/*   'mouseover', function(){
+   console.log('Entraste a ' + key)
+   if ($('#'+tramo_parsed)[0].style.strokeWidth != ""){
+    $('#'+tramo_parsed)[0].style.strokeWidth = $('#'+tramo_parsed)[0].style.strokeWidth * 1.1
+   }
+
+ })
+} */
+
 
 // tomar la hora del rango
 $('#hora').on('input change',function(){
   var horaval = Number($(this).val())
-  horaval = parseInt(horaval).toString().padStart(2,"0") +":"+ parseInt((horaval % 1)*60).toString().padStart(2,"0")
-/*   console.log(horaval)
-  console.log(typeof(horaval)) */
+  var timebin = parseInt(horaval).toString() + parseInt(Math.round((horaval % 1)*60)/10).toString()
+  horaval = parseInt(horaval).toString().padStart(2,"0") +":"+ parseInt(Math.round((horaval % 1)*60)).toString().padStart(2,"0")
   $('.hora-val').html(horaval);
-  $('#sanpedrito-flores')[0].style.stroke = getRandomColor()
-  console.log($("path"))
-  for (let key in $("path")) {
-    $("path")[key].style.stroke = getScaleColor();
-    $("path")[key].style.strokeWidth = getRandomWidth();
+
+  //Loop para cambiar colores y widths
+  for (const [key, value] of Object.entries(viz_data[timebin])) {
+    let tramo_parsed = parse_tramo(key)
+   $('#'+tramo_parsed)[0].style.stroke = getScaleColor(value['ocupacion_pas_x_m2']);
+   $('#'+tramo_parsed)[0].style.strokeWidth = getRandomWidth(value['ocupacion_pas_x_m2']);
+   //$('#'+tramo_parsed).attr('title', key + '&#10;' + 'Ocupación en m2: ' + value['ocupacion_pas_x_m2'] + '&#10;' + 'Pasajeros por hora: ' + value['pasajeros_hora'])
   }
 })
+
+
 
  /*  console.log(getRandomColor()) */
 
