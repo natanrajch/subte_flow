@@ -1,4 +1,5 @@
 import * as d3 from "https://cdn.skypack.dev/d3@7";
+/* import * as d3 from "./d3.min.js"; */
 /* const fs = require('fs');
 
 fs.readFile('viz_data.json', (err, datos) => {
@@ -78,32 +79,52 @@ function getRandomColor() {
   return color;
 }
 
-let myColor = d3.scaleLinear().domain([1,20])
-  .range(["#c4f5c8", "DarkGreen"])
+let ocupacionColor = d3.scaleLinear().domain([1,20])
+  .range(["#5aff81", "#88292F"])
+let flujoColor = d3.scaleLinear().domain([1,20])
+  .range(["#5aff81", "#FB5012"])
 
-function getScaleColor(rand) {
-  return myColor(Math.floor(rand * 7))
+function getScaleColor(value, tipoViz) {
+  if (tipoViz == 'ocupacion_pas_x_m2') {
+    return ocupacionColor((value * 7))
+  }
+  return flujoColor((value /10000 * 40))
+  
 }
-function getRandomWidth(rand) {
-  return (Math.round(rand * 4*100)/100+1.5)
+function getWidth(value, tipoViz) {
+  if (tipoViz == 'ocupacion_pas_x_m2') {
+    return (Math.round(value *1.5*100)/100+4)
+  }
+  return (Math.round(value /10000 * 8 *1.5*100)/100+4)
 }
-function parse_tramo(tramo) {
+function parseTramo(tramo) {
   let tramo_parsed = tramo.replace('1','primo')
   tramo_parsed = tramo_parsed.replace(/á|é|í|ó|ú| |ü|ñ/g,'__')
   tramo_parsed = tramo_parsed.replace('.', '\\.')
   return tramo_parsed
 }
+function resetViz() {
+  for (const [key, value] of Object.entries(viz_data['100'])) {
+    let tramo_parsed = parseTramo(key)
+    $('#'+tramo_parsed)[0].style.stroke = "#5aff81"
+    $('.hora-val').html("05:00")
+    $('#hora').val(5)
 
-//Agregar tooltips a los tramos
+}
+}
+resetViz()
+//Agregar label de tramos y ordenar estilo de mapa
 for (const [key, value] of Object.entries(viz_data['100'])) {
-  let tramo_parsed = parse_tramo(key)
-/*  $('#'+tramo_parsed).append('<title>' + key + '</title>') */
-/*  $('#'+tramo_parsed).tooltip() */
- $('#'+tramo_parsed).on({
+  let tramo_parsed = parseTramo(key)
+  $('#'+tramo_parsed).on({
   mouseenter: function () {
     if ($('#'+tramo_parsed)[0].style.strokeWidth != ""){
       $('#'+tramo_parsed)[0].style.strokeWidth = $('#'+tramo_parsed)[0].style.strokeWidth * 1.3
-     }
+      let horaval = $('#hora').val()
+      let timebin = parseInt(horaval).toString() + parseInt(Math.round((horaval % 1)*60)/10).toString()
+      $('#label1').text(key + '\n' + 'Ocupación en m2 (parados): ' + viz_data[timebin][key]['ocupacion_pas_x_m2'].toFixed(2) + '\n' + 'Pasajeros por hora: ' + viz_data[timebin][key]['pasajeros_hora'].toFixed(0))
+    
+    }
   },
   mouseleave: function () {
     if ($('#'+tramo_parsed)[0].style.strokeWidth != ""){
@@ -113,31 +134,30 @@ for (const [key, value] of Object.entries(viz_data['100'])) {
 })
 }
    
-  
-/*   'mouseover', function(){
-   console.log('Entraste a ' + key)
-   if ($('#'+tramo_parsed)[0].style.strokeWidth != ""){
-    $('#'+tramo_parsed)[0].style.strokeWidth = $('#'+tramo_parsed)[0].style.strokeWidth * 1.1
-   }
+// Generar funcionalidad de Switch Ocupación vs Flujo
+let tipoViz = 'ocupacion_pas_x_m2'
+$('input[type=radio][name=datosVisualizados]').change(function() {
+  resetViz()
+  tipoViz = this.value
+});
 
- })
-} */
-
-
-// tomar la hora del rango
+// tomar la hora del rango y actualizar todo según cambios de hora y tipo de viz elegida
 $('#hora').on('input change',function(){
-  var horaval = Number($(this).val())
-  var timebin = parseInt(horaval).toString() + parseInt(Math.round((horaval % 1)*60)/10).toString()
+  let horaval = Number($(this).val())
+  let timebin = parseInt(horaval).toString() + parseInt(Math.round((horaval % 1)*60)/10).toString()
   horaval = parseInt(horaval).toString().padStart(2,"0") +":"+ parseInt(Math.round((horaval % 1)*60)).toString().padStart(2,"0")
   $('.hora-val').html(horaval);
 
   //Loop para cambiar colores y widths
   for (const [key, value] of Object.entries(viz_data[timebin])) {
-    let tramo_parsed = parse_tramo(key)
-   $('#'+tramo_parsed)[0].style.stroke = getScaleColor(value['ocupacion_pas_x_m2']);
-   $('#'+tramo_parsed)[0].style.strokeWidth = getRandomWidth(value['ocupacion_pas_x_m2']);
+    let tramo_parsed = parseTramo(key)
+   $('#'+tramo_parsed)[0].style.stroke = getScaleColor(value[tipoViz],tipoViz);
+   $('#'+tramo_parsed)[0].style.strokeWidth = getWidth(value[tipoViz],tipoViz);
    //$('#'+tramo_parsed).attr('title', key + '&#10;' + 'Ocupación en m2: ' + value['ocupacion_pas_x_m2'] + '&#10;' + 'Pasajeros por hora: ' + value['pasajeros_hora'])
   }
+
+  //Quitar el texto de la etiqueta
+  $('#label1').text('')
 })
 
 
