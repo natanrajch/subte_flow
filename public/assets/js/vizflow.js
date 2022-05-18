@@ -93,7 +93,7 @@ function getScaleColor(value, tipoViz) {
 }
 function getWidth(value, tipoViz) {
   if (tipoViz == 'ocupacion_pas_x_m2') {
-    return (Math.round(value *1.5*100)/100+4)
+    return (Math.round(value *2*100)/100+4)
   }
   return (Math.round(value /10000 * 8 *1.5*100)/100+4)
 }
@@ -107,6 +107,7 @@ function resetViz() {
   for (const [key, value] of Object.entries(viz_data['100'])) {
     let tramo_parsed = parseTramo(key)
     $('#'+tramo_parsed)[0].style.stroke = "#5aff81"
+    $('#'+tramo_parsed)[0].style.strokeWidth = '4.5354'
     $('.hora-val').html("05:00")
     $('#hora').val(5)
 
@@ -122,7 +123,7 @@ for (const [key, value] of Object.entries(viz_data['100'])) {
       $('#'+tramo_parsed)[0].style.strokeWidth = $('#'+tramo_parsed)[0].style.strokeWidth * 1.3
       let horaval = $('#hora').val()
       let timebin = parseInt(horaval).toString() + parseInt(Math.round((horaval % 1)*60)/10).toString()
-      $('#label1').text(key + '\n' + 'Ocupación en m2 (parados): ' + viz_data[timebin][key]['ocupacion_pas_x_m2'].toFixed(2) + '\n' + 'Pasajeros por hora: ' + viz_data[timebin][key]['pasajeros_hora'].toFixed(0))
+      $('#label1').text(key.toUpperCase() + '\n' + 'Ocupación en pas/m2 (parados): ' + viz_data[timebin][key]['ocupacion_pas_x_m2'].toFixed(2) + '\n' + 'Pasajeros por hora: ' + viz_data[timebin][key]['pasajeros_hora'].toFixed(0))
     
     }
   },

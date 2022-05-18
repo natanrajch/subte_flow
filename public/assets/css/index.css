@@ -73,8 +73,8 @@
   .etiqueta{
     position:fixed;
     bottom:176px;
-    transform: translate(40%, 0%);
-    text-align: center; 
+    transform: translate(13%, 0%);
+    text-align: left; 
     white-space: pre-wrap;
     font-size: 16px;
   }
