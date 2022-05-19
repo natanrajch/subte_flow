@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path')
 const { engine } = require('express-handlebars');
 const app = express();
-const port = 5000;
+const port = 20000;
 
 
 
@@ -32,6 +32,10 @@ app.get('/sf', (req, res) => {
 
 //app.listen(3000);
 
-app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
+/* app.listen(port, () => {            //server starts listening for any attempts from a client to connect at port: {port}
+    console.log(`Now listening on port ${port}`); 
+});
+ */
+app.listen(port, '0.0.0.0', () => {            //server starts listening for any attempts from a client to connect at port: {port}
     console.log(`Now listening on port ${port}`); 
 });

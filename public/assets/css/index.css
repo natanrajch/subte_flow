@@ -12,6 +12,7 @@
     background-color:rgb(60,35,115);
     border-radius: 20px;
     width: 100%;
+    min-width: 210mm;
     height:150.556mm;
     margin: 0px;
     padding: 0px;
