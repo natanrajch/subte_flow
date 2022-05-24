@@ -13,8 +13,12 @@ const dataSet = async function getData() {
     return await axios.get('/viz_data20220511.json');
     }
 const data = await dataSet()
-/* console.log(data.data) */
 var viz_data = data.data
+
+/* $.getJSON('/api/data/20220511', (data)=>{
+  let viz_data = data.data
+})
+ */
 
 
 /* d3.json("/viz_data.json", function(data) {
