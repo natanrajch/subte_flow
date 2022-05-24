@@ -22,5 +22,8 @@
     "express-handlebars": "^6.0.2",
     "jquery": "^3.6.0",
     "nodemon": "^2.0.15"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }
