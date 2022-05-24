@@ -10,7 +10,7 @@ fs.readFile('viz_data.json', (err, datos) => {
 import axios from 'https://cdn.skypack.dev/axios-dev2';
 
 const dataSet = async function getData() {
-    return await axios.get('/viz_data.json');
+    return await axios.get('/viz_data20220511.json');
     }
 const data = await dataSet()
 /* console.log(data.data) */
@@ -70,15 +70,6 @@ $(window).resize(floatSlider) */
 /* window.onresize = hscrollbar(); */ /* Call the function when the window resizes */ 
 
 
-function getRandomColor() {
-  let letters = '0123456789ABCDEF';
-  let color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
-
 let ocupacionColor = d3.scaleLinear().domain([1,20])
   .range(["#5aff81", "#88292F"])
 let flujoColor = d3.scaleLinear().domain([1,20])
@@ -88,14 +79,14 @@ function getScaleColor(value, tipoViz) {
   if (tipoViz == 'ocupacion_pas_x_m2') {
     return ocupacionColor((value * 7))
   }
-  return flujoColor((value /10000 * 40))
+  return flujoColor((value /10000 * 30))
   
 }
 function getWidth(value, tipoViz) {
   if (tipoViz == 'ocupacion_pas_x_m2') {
     return (Math.round(value *2*100)/100+4)
   }
-  return (Math.round(value /10000 * 8 *1.5*100)/100+4)
+  return (Math.round(value /10000 * 6.5 *1.5*100)/100+4)
 }
 function parseTramo(tramo) {
   let tramo_parsed = tramo.replace('1','primo')
