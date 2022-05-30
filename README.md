@@ -1,3 +1,3 @@
 # subte_flow
-Node WebApp with Buenos Aires Metro's passenger flow viz
-Colab notebook with passenger flow data analysis and some charts
+Node+Express WebApp with Buenos Aires Metro's passenger flow viz  
+Colab notebook with passenger flow data analysis and some charts  
